@@ -46,11 +46,16 @@ function login(req, res) {
     });
 }
 
+
+// function gardarDatos(req, res){
+
+// }
+
 function generarToken(usuario) {
     const payload = {
       usuario: usuario,
     };
-  
+    console.log(process.env.SECRET_KEY);
     const token = jwt.sign(payload, process.env.SECRET_KEY , { expiresIn: '4h' });
   
     return token;

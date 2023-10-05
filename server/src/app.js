@@ -11,7 +11,7 @@ require('dotenv').config();
 // Middleware para verificar el token JWT
 function verificaToken(req, res, next) {
     const token = req.headers['authorization'];
-  
+    console.log(process.env.SECRET_KEY);
     if (!token) {
       return res.status(401).json({ message: 'Token de autenticación no proporcionado' });
     }
