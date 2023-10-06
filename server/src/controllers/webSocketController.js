@@ -1,3 +1,4 @@
+const WebSocket = require('ws');
 // Almacena clientes conectados
 const clients = new Set();
 
@@ -21,18 +22,20 @@ function setupWebSocket(webSocketServer) {
       });
     });
 
+}
 
-    // Función para notificar a todos los clientes conectados
-    function notifyClients(datos) {
-      clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(datos);
-        }
-      });
-    }
+// Función para notificar a todos los clientes conectados
+function notifyClients(datos) {
+  const jsonData = JSON.stringify(datos); // Convertir el objeto a una cadena JSON
+  clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+          client.send(jsonData); // Enviar la cadena JSON
+      }
+  });
 }
 
 
 module.exports = {
     setupWebSocket,
+    notifyClients
 };

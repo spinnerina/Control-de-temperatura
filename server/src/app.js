@@ -1,6 +1,5 @@
 const express = require('express');
 const morgan = require('morgan');
-const jwt = require('jsonwebtoken');
 const http = require('http');
 const WebSocket = require('ws');
 const app = express();
@@ -8,21 +7,17 @@ app.use(morgan('dev'));
 require('dotenv').config();
 
 
+
 // Middleware para verificar el token JWT
-function verificaToken(req, res, next) {
-    const token = req.headers['authorization'];
-    console.log(process.env.SECRET_KEY);
-    if (!token) {
-      return res.status(401).json({ message: 'Token de autenticación no proporcionado' });
-    }
-  
-    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-      if (err) {
-        return res.status(401).json({ message: 'Token de autenticación inválido' });
-      }
-      req.usuario = decoded; // Almacena la información del usuario decodificada en el objeto de solicitud
-      next(); // Continúa con la ejecución de la ruta
-    });
+function verificaTokenFijo(req, res, next) {
+  const tokenEnviado = req.query.token; // Obtén el token de la URL
+  if (tokenEnviado === process.env.SECRET_KEY) {
+      // Token válido, permite el acceso a la ruta
+      next();
+  } else {
+      // Token inválido, devuelve un error de autenticación
+      return res.status(401).json({ message: 'Token de autenticación inválido' });
+  }
 }
 
 //Conf express
@@ -36,7 +31,7 @@ app.use('/public', publicRoutes);
 
 //Conf rutas api
 const apiRoutes = require('./routes/apiRoutes');
-app.use('/api', verificaToken, apiRoutes);
+app.use('/', verificaTokenFijo, apiRoutes);
 
 //Creo servidor http
 const server = http.createServer(app);

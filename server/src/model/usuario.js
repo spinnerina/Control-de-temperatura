@@ -4,7 +4,7 @@ class Usuario {
       this.usu_nombre = usu_nombre;
       this.usu_login = usu_login;
       this.usu_contraseña = usu_contraseña;
-      this.usu_token = usu_token
+      this.usu_token = usu_token;
     }
 }
 

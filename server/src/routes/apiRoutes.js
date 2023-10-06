@@ -4,7 +4,8 @@ const router = express.Router();
 //Importar controlladores
 const apiController = require('../controllers/apiController');
 
-router.get('/', apiController.saludo);
+router.get('/saludo', apiController.saludo);
+router.post('/webhook', apiController.guardarDatos);
 
 
 

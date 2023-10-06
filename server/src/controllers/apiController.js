@@ -1,40 +1,39 @@
 const Usuario = require('../model/usuario');
+const Historico = require('../model/historico');
 const connection = require('../conf/db');
 const jwt = require('jsonwebtoken');
+const webSocket = require('./webSocketController');
 
 function saludo(req, res){
     res.json({ message: 'Hola! Bienvenido a mi api de express y WebSocket'});
 }
 
 function login(req, res) {
-    let usu_token;
     const { usu_login, usu_contraseña } = req.body;
 
-    connection.query("SELECT usu_id, usu_nombre, usu_contraseña FROM usuario WHERE usu_login = ?", [usu_login], (error, results, fields) => {
+    connection.query("SELECT usu_id, usu_nombre, usu_contraseña, usu_token FROM usuario WHERE usu_login = ?", [usu_login], (error, results, fields) => {
         if (error) {
             res.json({ message: error });
         } else {
             if (results.length > 0) {
                 const usuarioEncontrado = results[0];
-                if (usu_contraseña === usuarioEncontrado.usu_contraseña) {
-                    usu_token = generarToken(usuarioEncontrado);
-                    if (usu_token !== '') {
-                        const usuario = new Usuario(usuarioEncontrado.usu_id, usuarioEncontrado.usu_nombre, usu_login ,'', usu_token);
-
+                if (usu_contraseña === usuarioEncontrado.usu_contraseña) { //Login correcto
+                    if(usuarioEncontrado.usu_token == '' || usuarioEncontrado.usu_token == null){ //Requiere actualizar el token
+                        const usuario = new Usuario(usuarioEncontrado.usu_id, usuarioEncontrado.usu_nombre, usu_login ,'', process.env.SECRET_KEY);
                         connection.query("UPDATE usuario SET usu_token = ? WHERE usu_id = ?", [usuario.usu_token, usuario.usu_id], (error, results, fields) => {
                             if (error) {
                                 return error;
                             } else {
                                 if (results.affectedRows > 0) {
-                                    res.json({ message: 'Login correcto', usuario: usuario, update: results.affectedRows });
+                                    res.json({ message: 'Login correcto', usuario: usuario, actualizo: true });
                                 } else {
-                                    res.json({ message:"La consulta se ejecutó, pero no se actualizaron filas"});
+                                    res.json({ message: 'Login correcto', usuario: usuario, actualizo: false });
                                 }
                             }
                         });
-
-                    } else {
-                        res.json({ message: 'Error al crear el token' });
+                    }else{ //No requiere actualizar
+                        const usuario = new Usuario(usuarioEncontrado.usu_id, usuarioEncontrado.usu_nombre, usu_login ,'', usuarioEncontrado.usu_token);
+                        res.json({ message: 'Login correcto', usuario: usuario });
                     }
                 } else {
                     res.json({ message: 'Contraseña incorrecta' });
@@ -47,22 +46,22 @@ function login(req, res) {
 }
 
 
-// function gardarDatos(req, res){
+function guardarDatos(req, res){
+    const {id, temperatura, humedad, timestamp} = req.body;
 
-// }
-
-function generarToken(usuario) {
-    const payload = {
-      usuario: usuario,
-    };
-    console.log(process.env.SECRET_KEY);
-    const token = jwt.sign(payload, process.env.SECRET_KEY , { expiresIn: '4h' });
-  
-    return token;
-}
-
-function actualizarToken(usu_id, usu_token) {
-    
+    connection.query("INSERT INTO historico(pla_id, his_time, his_temperatura, his_humedad) VALUES(?, ?, ?, ?)", [id, timestamp, temperatura, humedad], (error, results, fields) => {
+        if(error){
+            res.json({ message: "Error: " + error});
+        }else{
+            if (results.affectedRows > 0) {
+                const historico = new Historico(results.insertId, id, timestamp, temperatura, humedad);
+                webSocket.notifyClients(historico);
+                res.json({message: 'Guardado con exito'});
+            }else{
+                res.json({ message: 'Error al guardar los datos'});
+            }
+        }
+    });
 }
 
 
@@ -72,5 +71,6 @@ function actualizarToken(usu_id, usu_token) {
 
 module.exports = {
     saludo,
-    login
+    login,
+    guardarDatos
 };
