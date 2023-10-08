@@ -45,6 +45,22 @@ function login(req, res) {
     });
 }
 
+function getPlacas(req, res){
+    connection.query("SELECT placa.pla_id, usuario.usu_id, usuario.usu_nombre, placa.pla_estado FROM placa " +
+                     "LEFT JOIN usuario ON placa.usu_id = usuario.usu_id WHERE pla_estado = 1;", (error, results, fields) => {
+
+        if(error){
+            res.json({ message: "Error: " + error});
+        }else{
+            if (results.length > 0) {
+                res.json({ message: "Resultados cargados", data: results});
+            }else{
+                res.json({ message: "No se encontraron resultados"});
+            }
+        }
+    });
+}
+
 
 function guardarDatos(req, res){
     const {id, temperatura, humedad, timestamp} = req.body;
@@ -54,7 +70,8 @@ function guardarDatos(req, res){
             res.json({ message: "Error: " + error});
         }else{
             if (results.affectedRows > 0) {
-                const historico = new Historico(results.insertId, id, timestamp, temperatura, humedad);
+                let fecha = new Date(timestamp * 1000);
+                const historico = new Historico(results.insertId, id, fecha.toLocaleString(), temperatura, humedad);
                 webSocket.notifyClients(historico);
                 res.json({message: 'Guardado con exito'});
             }else{
@@ -65,12 +82,62 @@ function guardarDatos(req, res){
 }
 
 
+function historial(req, res){
+    let {timestampDesde, timestampHasta, id} = req.query;
+
+    if(timestampDesde == ''){
+        timestampDesde = obtenerFecha("Desde");
+    }
+
+    if(timestampHasta == ''){
+        timestampHasta = obtenerFecha("Hasta");
+    }
+    if(timestampDesde != null && timestampHasta != null){
+        connection.query("SELECT usuario.usu_id, usuario.usu_nombre, placa.pla_id, placa.pla_estado, historico.his_id ,historico.his_time, historico.his_humedad, "+ 
+                        "historico.his_temperatura FROM usuario "+
+                        "LEFT JOIN placa ON usuario.usu_id = placa.usu_id "+
+                        "LEFT JOIN historico ON placa.pla_id = historico.pla_id "+
+                        "WHERE usuario.usu_id = ? AND historico.his_time BETWEEN ? AND ? AND placa.pla_estado = 1", [id, timestampDesde, timestampHasta],(error, results, fields) => {
+
+            if(error){
+                res.json({ message: "Error: " + error});
+            }else{
+                if (results.length > 0) {
+                    results = results.map(result => ({
+                        ...result,
+                        pla_estado: result.pla_estado[0] // Convierte el Buffer a 1 o 0
+                    }));
+                    res.json({ message: 'Resultados cargados', datos: results});
+                }else{
+                    res.json({ message: 'No se encontraron datos en la base de datos'});
+                }
+            }
+        });
+    }else{
+        res.json({ message: 'Alguna de las fechas es incorrecta'});
+    }
+}
 
 
-
+function obtenerFecha(bandera){
+    const fechaActual = new Date();
+    if(bandera == "Desde"){
+        fechaActual.setHours(0, 0, 0, 0);
+        const timestampDesde = fechaActual.getTime();
+        return timestampDesde;
+    }else if(bandera == "Hasta"){
+        fechaActual.setHours(23, 59, 59, 999);
+        const timestampHasta = fechaActual.getTime();
+        return timestampHasta;
+    }else{
+        return null;
+    }
+}
 
 module.exports = {
     saludo,
     login,
-    guardarDatos
+    guardarDatos,
+    getPlacas,
+    historial
 };

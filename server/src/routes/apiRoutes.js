@@ -6,6 +6,8 @@ const apiController = require('../controllers/apiController');
 
 router.get('/saludo', apiController.saludo);
 router.post('/webhook', apiController.guardarDatos);
+router.get('/placas', apiController.getPlacas);
+router.get('/historial', apiController.historial);
 
 
 

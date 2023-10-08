@@ -16,5 +16,13 @@
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
     "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },"nodemonConfig": {
+    "watch": ["src"],
+    "ext": "js,json",  
+    "exec": "node src/app.js" 
   }
+  
 }

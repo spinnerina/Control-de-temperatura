@@ -1,0 +1,15 @@
+<nav class="navbar center-nav">
+    <ul class="navbar-list">
+      <li class="navbar-item">
+        <a href="#historicos" [routerLink]="['/']">Históricos</a>
+      </li>
+      <li class="navbar-item">
+        <a href="#tiempo-real" [routerLink]="['/tiempoReal']" routerLinkActive="router-link-active" >Tiempo Real</a>
+      </li>
+    </ul>
+    <ul class="sesion">
+      <li class="navbar-item cerrar-sesion">
+        <a href="#cerrar-sesion" (click)="cerrarSesion()">Cerrar sesion</a>
+      </li>
+    </ul>
+  </nav>

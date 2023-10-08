@@ -1,1 +1,17 @@
-<p>home works!</p>
+<app-header></app-header>
+
+<mat-form-field appearance="fill">
+  <mat-label>Fecha de inicio</mat-label>
+  <input matInput placeholder="Fecha de inicio" [matDatepicker]="startDatePicker">
+  <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+  <mat-datepicker #startDatePicker></mat-datepicker>
+</mat-form-field>
+
+<mat-form-field appearance="fill">
+  <mat-label>Fecha de fin</mat-label>
+  <input matInput placeholder="Fecha de fin" [matDatepicker]="endDatePicker">
+  <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+  <mat-datepicker #endDatePicker></mat-datepicker>
+</mat-form-field>
+
+  

@@ -5,7 +5,9 @@
 		</div>
 		<br>
 		<div class="login">
-				<input type="text" placeholder="username" name="user"><br>
-				<input type="password" placeholder="password" name="password"><br>
-				<input type="button" value="Login">
+			<form #loginForm="ngForm">
+			  <input type="text" placeholder="Usuario" name="usu_login" [(ngModel)]="usu_login" required><br>
+			  <input type="password" placeholder="Contraseña" name="usu_contrasena" [(ngModel)]="usu_contrasena" required><br> 
+			  <input type="button" value="Login" (click)="login(loginForm)">
+			</form>
 </div>

@@ -1,0 +1,44 @@
+/* Estilos básicos del navbar */
+.navbar {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    left: 0px;
+    right: 0px;
+  }
+
+.center-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+  
+  /* Estilos de la lista de navegación */
+  .navbar-list {
+    list-style-type: none;
+  }
+  
+  /* Estilos de los elementos de la lista de navegación */
+  .navbar-item {
+    display: inline;
+    margin: 20px;
+  }
+  
+  /* Estilos de los enlaces */
+  .navbar-item a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+  
+  /* Cambiar color del enlace al pasar el mouse */
+  .navbar-item a:hover {
+    color: #ff5733; /* Puedes cambiar este color */
+  }
+  
+.sesion{
+  display: inline;
+  position: fixed;
+  right: 0px;
+}
