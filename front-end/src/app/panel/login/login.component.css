@@ -19,7 +19,7 @@ body{
 	bottom: -40px;
 	max-width: 101.28%;
 	max-height: 102.6%;
-	background-image: url(https://www.eurofins-environment.es/wp-content/uploads/2022/06/Industria-5.0-768x389.jpg);
+	background: linear-gradient(0deg, rgb(255, 255, 255) 30%, rgb(0, 0, 0) 100%);
 	background-size: cover;
 	z-index: 0;
 }
@@ -32,7 +32,7 @@ body{
 	left: -20px;
 	right: -40px;
 	bottom: -40px;
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65))); /* Chrome,Safari4+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0, 0, 0, 0.65))); /* Chrome,Safari4+ */
 	z-index: 1;
 	opacity: 0.6;
 } 
@@ -53,7 +53,7 @@ body{
 }
 
 .header div span{
-	color: #0004ff !important;
+	color: #ff0000 !important;
 }
 
 .login{

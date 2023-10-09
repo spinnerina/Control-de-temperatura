@@ -46,13 +46,17 @@ function login(req, res) {
 }
 
 function getPlacas(req, res){
-    connection.query("SELECT placa.pla_id, usuario.usu_id, usuario.usu_nombre, placa.pla_estado FROM placa " +
+    connection.query("SELECT placa.pla_id, usuario.usu_id, usuario.usu_nombre, placa.pla_estado, usuario.usu_token FROM placa " +
                      "LEFT JOIN usuario ON placa.usu_id = usuario.usu_id WHERE pla_estado = 1;", (error, results, fields) => {
 
         if(error){
             res.json({ message: "Error: " + error});
         }else{
             if (results.length > 0) {
+                results = results.map(result => ({
+                    ...result,
+                    pla_estado: result.pla_estado[0] // Convierte el Buffer a 1 o 0
+                }));
                 res.json({ message: "Resultados cargados", data: results});
             }else{
                 res.json({ message: "No se encontraron resultados"});
@@ -83,7 +87,7 @@ function guardarDatos(req, res){
 
 
 function historial(req, res){
-    let {timestampDesde, timestampHasta, id} = req.query;
+    let {timestampDesde, timestampHasta, usu_nombre} = req.query;
 
     if(timestampDesde == ''){
         timestampDesde = obtenerFecha("Desde");
@@ -97,7 +101,7 @@ function historial(req, res){
                         "historico.his_temperatura FROM usuario "+
                         "LEFT JOIN placa ON usuario.usu_id = placa.usu_id "+
                         "LEFT JOIN historico ON placa.pla_id = historico.pla_id "+
-                        "WHERE usuario.usu_id = ? AND historico.his_time BETWEEN ? AND ? AND placa.pla_estado = 1", [id, timestampDesde, timestampHasta],(error, results, fields) => {
+                        "WHERE usuario.usu_nombre = ? AND historico.his_time BETWEEN ? AND ? AND placa.pla_estado = 1", [usu_nombre, timestampDesde, timestampHasta],(error, results, fields) => {
 
             if(error){
                 res.json({ message: "Error: " + error});

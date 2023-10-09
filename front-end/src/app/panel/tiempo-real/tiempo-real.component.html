@@ -1,2 +1,15 @@
 <app-header></app-header>
+<div class="select">
+    <mat-form-field class="custom-form-field">
+      <mat-label>Seleccione la placa</mat-label>
+      <mat-select required [(ngModel)]="seleccionPlaca">
+        <mat-option *ngFor="let usuPlaca of placas" [value]="usuPlaca">
+          {{ usuPlaca }}
+
+        </mat-option>
+      </mat-select>
+      <mat-error>Seleccione una placa</mat-error>
+      <mat-hint></mat-hint>
+    </mat-form-field>
+  </div>
 <div id="chart-container"></div>

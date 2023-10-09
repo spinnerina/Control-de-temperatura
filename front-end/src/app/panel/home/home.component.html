@@ -1,17 +1,40 @@
 <app-header></app-header>
 
-<mat-form-field appearance="fill">
-  <mat-label>Fecha de inicio</mat-label>
-  <input matInput placeholder="Fecha de inicio" [matDatepicker]="startDatePicker">
-  <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
-  <mat-datepicker #startDatePicker></mat-datepicker>
-</mat-form-field>
+<div class="content">
+  <div class="datePicker">
+    <mat-form-field>
+      <mat-label>Ingresar un rango de fecha</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate placeholder="Fecha Inicio" [(ngModel)]="fechaInicio">
+        <input matEndDate placeholder="Fecha Fin" [(ngModel)]="fechaFin">
+      </mat-date-range-input>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+  </div>
 
-<mat-form-field appearance="fill">
-  <mat-label>Fecha de fin</mat-label>
-  <input matInput placeholder="Fecha de fin" [matDatepicker]="endDatePicker">
-  <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
-  <mat-datepicker #endDatePicker></mat-datepicker>
-</mat-form-field>
+  <div class="select">
+    <mat-form-field class="custom-form-field">
+      <mat-label>Seleccione el usuario</mat-label>
+      <mat-select required [(ngModel)]="seleccionUsuario">
+        <mat-option *ngFor="let usuPlaca of placas" [value]="usuPlaca">
+          {{ usuPlaca }}
 
+        </mat-option>
+      </mat-select>
+      <mat-error>Seleccione un usuario</mat-error>
+      <mat-hint></mat-hint>
+    </mat-form-field>
+  </div>
+  
+  <div class="buscar">
+    <button class="custom-btn btn-12" (click)="buscarHistorial()">
+      <span>Buscar</span>
+      <span>Buscar</span>
+    </button>
+  </div>
+
+</div>
+
+<div id="chart-container"></div>
   
