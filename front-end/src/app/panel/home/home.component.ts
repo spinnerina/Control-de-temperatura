@@ -92,7 +92,7 @@ export class HomeComponent {
               title: {
                 text: 'Fecha',
               },
-              tickCount: 5,
+              mask: 'DD/MM/YYYY HH:mm:ss',
             },
             yAxis: {
               title: {

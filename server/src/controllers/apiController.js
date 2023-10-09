@@ -101,7 +101,8 @@ function historial(req, res){
                         "historico.his_temperatura FROM usuario "+
                         "LEFT JOIN placa ON usuario.usu_id = placa.usu_id "+
                         "LEFT JOIN historico ON placa.pla_id = historico.pla_id "+
-                        "WHERE usuario.usu_nombre = ? AND historico.his_time BETWEEN ? AND ? AND placa.pla_estado = 1", [usu_nombre, timestampDesde, timestampHasta],(error, results, fields) => {
+                        "WHERE usuario.usu_nombre = ? AND historico.his_time BETWEEN ? AND ? AND placa.pla_estado = 1 "+
+                        "ORDER BY historico.his_time", [usu_nombre, timestampDesde, timestampHasta],(error, results, fields) => {
 
             if(error){
                 res.json({ message: "Error: " + error});
@@ -109,7 +110,8 @@ function historial(req, res){
                 if (results.length > 0) {
                     results = results.map(result => ({
                         ...result,
-                        pla_estado: result.pla_estado[0] // Convierte el Buffer a 1 o 0
+                        pla_estado: result.pla_estado[0], // Convierte el Buffer a 1 o 0
+                        his_time: formatDate(result.his_time) // Formatea el timestamp
                     }));
                     res.json({ message: 'Resultados cargados', datos: results});
                 }else{
@@ -120,6 +122,15 @@ function historial(req, res){
     }else{
         res.json({ message: 'Alguna de las fechas es incorrecta'});
     }
+}
+
+// Función para formatear timestamp a DD/MM/YYYY
+function formatDate(timestamp) {
+    const date = new Date(timestamp);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
 }
 
 
