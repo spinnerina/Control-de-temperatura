@@ -62,7 +62,8 @@ export class HomeComponent {
           if (this.chart) {
             this.chart.destroy(); // Destruye el gráfico anterior si existe
           }
-          const data = [] as { his_time: number, value: number, type: string }[];;
+
+          const data = [] as { his_time: Date, value: number, type: string }[];
           
           // Recorrer los datos de la respuesta
           response.datos.forEach(item => {
@@ -116,7 +117,8 @@ export class HomeComponent {
 
 
   fechaATimestamp(fechaStr: string): number {
-    const fecha = new Date(fechaStr);
+    const timestamp = Date.parse(fechaStr);
+    const fecha = new Date(timestamp);
     return fecha.getTime();
   }
 }

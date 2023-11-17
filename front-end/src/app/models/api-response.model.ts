@@ -16,7 +16,7 @@ export class Historial{
         public pla_id: number,
         public pla_estado: number,
         public his_id: number,
-        public his_time: number,
+        public his_time: Date,
         public his_humedad: number,
         public his_temperatura: number,
     ){}
