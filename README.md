@@ -1,4 +1,4 @@
-# **Proyecto de Monitoreo de Temperatura en Tiempo Real**
+# Proyecto de Monitoreo de Temperatura en Tiempo Real
 
 Este proyecto consiste en una aplicación de monitoreo de temperatura en tiempo real, que utiliza Node.js, Express, WebSocket (ws), MySQL y otras librerías. El sistema está compuesto por un backend (servidor) y un frontend (cliente).
 
